@@ -104,4 +104,4 @@ Listen 100
 LISTEN 0      511                *:100             *:*    users:(("httpd",pid=2853,fd=4),("httpd",pid=2852,fd=4),("httpd",pid=2851,fd=4),("httpd",pid=2849,fd=4))
 ````
 
-📁 fichier  [ /etc/httpd/conf/httpd.conf](./script/conf)
+📁 fichier  [ /etc/httpd/conf/httpd.conf](./config/httpd.conf)
