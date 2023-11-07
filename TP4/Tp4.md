@@ -54,6 +54,22 @@ oh et je veux un ss sur le serveur
 n'affiche qu'une ligne : celle qui concerne l'écoute de notre programme
 ajoutez les bonnes options à ss ainsi qu'un | grep ... pour n'afficher que la bonne ligne
 
+Commande du client :
+```
+[root@localhost TP4]# python bs_client_I1.py
+b'Hi mate!'
+```
+Commande du server :
+```
+[root@localhost TP4]# sudo firewall-cmd --add-port=13337/tcp --permanent
+success
+[root@localhost TP4]# sudo firewall-cmd --add-port=13337/tcp --permanent
+success
+[root@localhost TP4]# python bs_server_I1.py
+b'Meooooo !'
+```
+
+
 
 
 
