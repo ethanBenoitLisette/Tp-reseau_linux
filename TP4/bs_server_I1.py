@@ -32,11 +32,10 @@ while True:
         print(f"Données reçues du client : {data}")
 
         # On répond au client un truc
-        conn.sendall(b"Hi mate!")
+        conn.sendall('Hi mate!')
 
     except socket.error:
         print ("Error Occured.")
         break
-    print("ui")
 # On ferme proprement la connexion TCP
 conn.close()
