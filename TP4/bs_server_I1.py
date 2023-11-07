@@ -5,7 +5,6 @@ import socket
 host = '' # string vide signifie, dans ce conetxte, toutes les IPs de la machine
 port = 13337
 
-# On crée un objet socket
 # SOCK_STREAM c'est pour créer un socket TCP (pas UDP donc)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # On demande à notre programme de se bind sur notre port
@@ -37,5 +36,11 @@ while True:
     except socket.error:
         print ("Error Occured.")
         break
+
+    except:  # on précise pas quelle exception, ça catch tout
+        print("Un client vient de se connecter et son IP est " + addr[0])
+
+
+
 # On ferme proprement la connexion TCP
 conn.close()
