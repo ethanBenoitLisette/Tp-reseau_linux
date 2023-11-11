@@ -12,12 +12,18 @@ s.bind((host, port))
 # Place le programme en mode écoute derrière le port auquel il s'est bind
 s.listen(1)
 # On définit l'action à faire quand quelqu'un se connecte : on accepte
-conn, addr = s.accept()
+
 # Dès que quelqu'un se connecte, on affiche un message qui contient son adresse
 
 # Petite boucle infinie (bah oui c'est un serveur)
 # A chaque itération la boucle reçoit des données et les traite
 while True:
+    
+    conn, addr = s.accept()
+    
+    print("Un client vient de se connecter et son IP est " + addr[0])
+    
+    conn.sendall(b'Hi mate!')
 
     try:
         # On reçoit 1024 bytes de données
@@ -42,7 +48,7 @@ while True:
         break
 
 # on précise pas quelle exception, ça catch tout
-    print("Un client vient de se connecter et son IP est " + addr[0])
+
 
 
 
