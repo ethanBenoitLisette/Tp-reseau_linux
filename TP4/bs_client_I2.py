@@ -15,9 +15,6 @@ try:
 except :
     print("ça marche pos")
 
-# Envoi de data bidon
-s.sendall(b'Meooooo !')
-
 # On reçoit 1024 bytes qui contiennent peut-être une réponse du serveur
 data = s.recv(1024)
 
