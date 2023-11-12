@@ -79,20 +79,26 @@ b'Meooooo !'
 Vous aurez besoin du cours sur la gestion d'erreurs pour cette partie.
 
 
-retour visuel
-
-afficher un message de succès chez le client quand il se co au serveur
-le message doit être : Connecté avec succès au serveur <IP_SERVER> sur le port <PORT>
-
-vous utiliserez un try except pour savoir si la connexion est correctement effectuée
-
-
-le programme doit permettre à l'utilisateur d'envoyer la string qu'il veut au serveur
-
-on peut récupérer un input utilisateur avec la fonction input() en Python
-au lancement du programme, un prompt doit apparaître pour indiquer à l'utilisateur qu'il peut envoyer une string au serveur :
-
-Que veux-tu envoyer au serveur : 
+````
+[root@localhost TP4]# python bs_client_I2.py
+Connecté avec succès au serveur 10.0.3.17 sur le port 13337
+Hi mate!
+Que veux-tu envoyer au serveur :
+ui
+Mes respects humble humain.
+[root@localhost TP4]# python bs_client_I2.py
+Connecté avec succès au serveur 10.0.3.17 sur le port 13337
+Hi mate!
+Que veux-tu envoyer au serveur :
+meo
+Meo à toi confrère.
+[root@localhost TP4]# python bs_client_I2.py
+Connecté avec succès au serveur 10.0.3.17 sur le port 13337
+Hi mate!
+Que veux-tu envoyer au serveur :
+waf
+ptdr t ki
+````
 
 
 
@@ -107,13 +113,15 @@ le message doit être : Un client vient de se co et son IP c'est <CLIENT_IP>.
 
 
 
-réponse adaptative
-
-si le message du client contient "meo" quelque part, répondre : Meo à toi confrère.
-
-si le message du client contient "waf" quelque part, répondre : ptdr t ki
-
-si le message du client ne contient PAS "meo", ni "waf", répondre : Mes respects humble humain.
+````
+[root@localhost TP4]# python bs_server_I2.py
+Un client vient de se connecter et son IP est 10.0.3.16
+ui
+Un client vient de se connecter et son IP est 10.0.3.16
+meo
+Un client vient de se connecter et son IP est 10.0.3.16
+waf
+````
 
 
 
