@@ -1,7 +1,7 @@
 import socket
 import struct
 
-host = 'localhost'
+host = '10.0.3.17'
 port = 13337
 
 # Création de l'objet socket de type TCP (SOCK_STREAM)
