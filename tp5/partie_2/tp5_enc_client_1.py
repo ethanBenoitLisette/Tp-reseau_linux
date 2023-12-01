@@ -3,9 +3,7 @@ import struct
 
 def send_message(sock, message):
     msg_len = len(message)
-
     sock.sendall(struct.pack('!I', msg_len))
-
     sock.sendall(message.encode())
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,16 +17,11 @@ try:
 
     expr = input("Expression arithmétique (format: x op y): ")
 
-    numbers = [int(n) for n in expr.split() if n.isdigit()]
-    if any(num > 4294967295 for num in numbers):
-        raise ValueError("Les nombres dans l'expression ne doivent pas dépasser 4294967295")
+    expr_len = len(expr)
 
-    allowed_operations = set(['+', '-', '*'])
-    operations = [op for op in expr.split() if op in allowed_operations]
-    if len(operations) != 1:
-        raise ValueError("L'expression doit contenir une opération parmi '+', '-', '*'")
+    s.sendall(struct.pack('!I', expr_len))
 
-    send_message(s, expr)
+    s.sendall(expr.encode())
 
     s_data = s.recv(1024)
     print(s_data.decode())

@@ -84,12 +84,8 @@ On gère toujours que des strings pour le moment, on reste sur de simples encode
 
 🌞 tp5_enc_client_1.py
 
-[tp5_enc_client_1.py](tp5_enc_client_1.py)
+[tp5_enc_client_1.py](partie_2/tp5_enc_client_1.py)
 
-il réceptionne un message utilisateur
-calcule sa taille 
-créer un header
-envoie le tout sur le réseau
 
 🌞 tp5_enc_server_1.py
 
@@ -97,10 +93,14 @@ attend la réception des messages d'un client
 à la réception d'un message
 
 lit l'en-tête pour déterminer combien il doit lire ensuite
+
 lit les x octets suivants
+
 reconstitue le message
+
 vérifie que le message se terminent bien par la séquence de fin
-[bs_server_I1.py](bs_server_I1.py)
+
+[tp5_enc_server_1.py](partie_2/tp5_enc_server_1.py)
 
 
 
