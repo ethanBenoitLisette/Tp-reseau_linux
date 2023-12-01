@@ -1,31 +1,30 @@
 import socket
+import struct
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind(('127.0.0.1', 9999))  
+def receive_message(sock):
+    msg_len = struct.unpack('!I', sock.recv(4))[0]
+    message = sock.recv(msg_len).decode()
+    return message
 
-s.listen(1)
-conn, addr = s.accept()
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.bind(('10.0.3.17', 9999))
+server_socket.listen()
 
-while True:
+print("Le serveur écoute sur 10.0.3.17:9999")
 
-    try:
-        # On reçoit la string Hello du client
-        data = conn.recv(1024)
-        if not data: break
-        print(f"Données reçues du client : {data}")
+try:
+    client_socket, client_address = server_socket.accept()
+    print(f"Connexion établie avec {client_address}")
 
-        conn.send("Hello".encode())
+    client_hello = receive_message(client_socket)
+    client_socket.sendall("Hello from server".encode())
 
-        # On reçoit le calcul du client
-        data = conn.recv(1024)
+    expr = receive_message(client_socket)
+    print(f"Expression reçue du client : {expr}")
 
-        # Evaluation et envoi du résultat
-        res  = eval(data.decode())
-        conn.send(str(res).encode())
+    result = eval(expr)
+    client_socket.sendall(str(result).encode())
 
-    except socket.error:
-        print("Error Occured.")
-        break
-
-conn.close()
+finally:
+    client_socket.close()
+    server_socket.close()
