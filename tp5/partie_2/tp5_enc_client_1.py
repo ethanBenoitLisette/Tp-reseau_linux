@@ -1,38 +1,37 @@
 import socket
+import struct
+
+def send_message(sock, message):
+    msg_len = len(message)
+
+    sock.sendall(struct.pack('!I', msg_len))
+
+    sock.sendall(message.encode())
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(('10.0.3.17', 9999))
 
-expression = input("Entrez une expression arithmétique (ex. 3 + 3) : ")
-
 try:
-    operands, operator = expression.split()
-    
-    operand1 = int(operands[0])
-    operand2 = int(operands[2])
-    valid_operators = ['+', '-', '*']
-    
-    if operator not in valid_operators:
-        raise ValueError("Opérateur invalide")
+    send_message(s, 'Hello')
 
-    if not(0 <= operand1 < 2**16) or not(0 <= operand2 < 2**16):
-        raise ValueError("Les nombres doivent être inférieurs à 4294967295 (2^32 - 1)")
+    data = s.recv(1024)
+    print(data.decode())
 
-except (ValueError, IndexError):
-    print("Saisie invalide. Assurez-vous d'entrer une expression arithmétique simple.")
+    expr = input("Expression arithmétique (format: x op y): ")
+
+    numbers = [int(n) for n in expr.split() if n.isdigit()]
+    if any(num > 4294967295 for num in numbers):
+        raise ValueError("Les nombres dans l'expression ne doivent pas dépasser 4294967295")
+
+    allowed_operations = set(['+', '-', '*'])
+    operations = [op for op in expr.split() if op in allowed_operations]
+    if len(operations) != 1:
+        raise ValueError("L'expression doit contenir une opération parmi '+', '-', '*'")
+
+    send_message(s, expr)
+
+    s_data = s.recv(1024)
+    print(s_data.decode())
+
+finally:
     s.close()
-    exit(1)
-
-operand1_bytes = operand1.to_bytes(2, byteorder='big')
-operand2_bytes = operand2.to_bytes(2, byteorder='big')
-
-message = operand1_bytes + operator.encode() + operand2_bytes + b'\x00'
-
-s.send(len(message).to_bytes(1, byteorder='big'))
-
-s.send(message)
-
-s_data = s.recv(1024)
-print(s_data.decode())
-
-s.close()
