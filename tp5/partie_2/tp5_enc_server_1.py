@@ -1,30 +1,30 @@
 import socket
-import struct
 
-def receive_message(sock):
-    msg_len = struct.unpack('!I', sock.recv(4))[0]
-    message = sock.recv(msg_len).decode()
-    return message
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.bind(('127.0.0.1', 9999))
+sock.listen()
+client, client_addr = sock.accept()
 
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind(('10.0.3.17', 9999))
-server_socket.listen()
+while True:
+    header = client.recv(4)
+    if not header:
+        break
 
-print("Le serveur écoute sur 10.0.3.17:9999")
+    msg_len = int.from_bytes(header, byteorder='big')
 
-try:
-    client_socket, client_address = server_socket.accept()
-    print(f"Connexion établie avec {client_address}")
+    chunks = []
+    bytes_received = 0
 
-    client_hello = receive_message(client_socket)
-    client_socket.sendall("Hello from server".encode())
+    while bytes_received < msg_len:
+        chunk = client.recv(min(msg_len - bytes_received, 1024))
+        if not chunk:
+            raise RuntimeError('Invalid chunk received bro')
 
-    expr = receive_message(client_socket)
-    print(f"Expression reçue du client : {expr}")
+        chunks.append(chunk)
+        bytes_received += len(chunk)
 
-    result = eval(expr)
-    client_socket.sendall(str(result).encode())
+    message_received = b"".join(chunks).decode('utf-8')
+    print(f"Received from client {message_received}")
 
-finally:
-    client_socket.close()
-    server_socket.close()
+client.close()
+sock.close()

@@ -79,33 +79,15 @@ conn.close()
 
 
 1. Strings sur mesure
+   
 On gère toujours que des strings pour le moment, on reste sur de simples encode() et decode() pour le transit sur le réseau.
+
 🌞 tp5_enc_client_1.py
 
-permet à l'utilisateur de saisir une string, qui doit être une expression arithmétique simple
-
-on tolère uniquement les nombres qui tiennent sur 4 octets (inférieur à 4294967295 donc, un nombre que certains gamers reconnaîtront... hihi)
-uniquement les opérations addition, soustraction, multiplication (restons simples)
-sous la forme simple "x opération y" par exemple 3 + 3 (pas de 3 + 3 + 3 par exemple)
-vous devez donc contrôler la saisie utilisateur avant de l'envoyer
-
-
-détecter la taille de l'expression saisie par l'utilisateur
-le client envoie au serveur :
-
-un en-tête qui annonce la taille du message (ou des messages)
-le message
-une séquence de fin (par exemple <clafin> ou juste un 0)
-
-
-
-
-Va falloir être un peu créatif pour gérer tout ça, avec votre ptit encodage maison, c'est un problème algorithmique. Peut-être que ce serait malin d'annoncer la taille des deux entiers dans des en-têtes. Par exemple : lire 1 octets qui contiennent la taille du premier entier, puis lire X octets pour obtenir le premier entier, puis lire 1 octet pour l'opération, puis lire 1 octets qui contiennent la taille du deuxième entier, etc.
-
-➜ Bout de code client pour vous aider
+[tp5_enc_client_1.py](tp5_enc_client_1.py)
 
 il réceptionne un message utilisateur
-calcule sa taille
+calcule sa taille 
 créer un header
 envoie le tout sur le réseau
 
@@ -118,6 +100,7 @@ lit l'en-tête pour déterminer combien il doit lire ensuite
 lit les x octets suivants
 reconstitue le message
 vérifie que le message se terminent bien par la séquence de fin
+[bs_server_I1.py](bs_server_I1.py)
 
 
 
@@ -131,7 +114,7 @@ Hé on s'approche de plus en plus de problèmes réels là, tu le sens ou pas me
 
 
 
-2. Code Encode Decode
+1. Code Encode Decode
 🌞 tp5_enc_client_2.py et tp5_enc_server_2.py
 
 maintenant vous traitez les entiers comme des entiers et plus comme des strings
