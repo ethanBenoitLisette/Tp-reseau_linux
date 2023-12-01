@@ -7,10 +7,10 @@ def receive_message(sock):
     return message
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind(('', 9999))
+server_socket.bind(('10.0.3.17', 9999))
 server_socket.listen()
 
-print("Le serveur écoute sur :9999")
+print("Le serveur écoute sur 10.0.3.17:9999")
 
 try:
     client_socket, client_address = server_socket.accept()

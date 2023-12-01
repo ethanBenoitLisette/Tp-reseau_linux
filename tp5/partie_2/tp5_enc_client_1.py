@@ -16,11 +16,9 @@ try:
     print(data.decode())
 
     expr = input("Expression arithmétique (format: x op y): ")
-
     expr_len = len(expr)
 
     s.sendall(struct.pack('!I', expr_len))
-
     s.sendall(expr.encode())
 
     s_data = s.recv(1024)
