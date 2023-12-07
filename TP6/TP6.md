@@ -27,28 +27,10 @@ Dès que l'exécution de la première fonction commencera à produire de l'atten
 
 on peut l'appeler comme ça : python web_sync.py https://www.ynov.com
 
-il télécharge le contenu d'une page Web qu'on lui passe en argument
-la page web est téléchargée dans /tmp/web_page
-
-le code doit comprendre une fonction get_content(url)
-
-
-url est l'URL de la page à récupérée
-la fonction fait la requête HTTP GET pour récupérer la page
-la fonction retourne le résultat
-
-
-le code doit comprendre une fonction write_content(content, file)
-
-
-content est le contenu à écrire dans le fichier
-
-file est le path dans lequel écrire
-
-
-
-
-Utilisez les méthodes classiques pour faire ça. Lib requests pour faire la requête HTTP, et méthode native open() pour écrire dans un fichier.
+````
+[root@localhost TP6]# python web_sync.py https://www.ynov.com
+Contenu écrit avec succès dans le fichier : /tmp/web_page
+````
 
 🌞 web_async.py
 
