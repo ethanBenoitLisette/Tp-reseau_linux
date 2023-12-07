@@ -31,10 +31,11 @@ async def main():
     start_time = time.time()
 
     url = sys.argv[1]
-    content = await get_content(url)
-    file_path = '/tmp/web_page'
 
-    await write_content(content, file_path)
+    # Utilisation de asyncio.gather pour exécuter les fonctions de manière concurrente
+    tasks = [get_content(url), write_content(await get_content(url), '/tmp/web_page')]
+
+    await asyncio.gather(*tasks)
 
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -42,3 +43,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
