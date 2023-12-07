@@ -6,7 +6,7 @@ import time
 def get_content(url):
     try:
         response = requests.get(url)
-        response.raise_for_status()  # Lève une exception en cas d'erreur HTTP
+        response.raise_for_status()  
         return response.text
     except requests.exceptions.RequestException as e:
         print(f"Erreur lors de la récupération du contenu de {url} : {e}")
