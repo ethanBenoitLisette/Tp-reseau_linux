@@ -7,11 +7,16 @@ def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         client_socket.connect((host, port))
 
-        client_socket.sendall(b'Hello')
+        while True:
+            # Envoyer un message au serveur
+            message = input("Saisissez un message (ou 'exit' pour quitter) : ")
+            if message.lower() == 'exit':
+                break
+            client_socket.sendall(message.encode())
 
-        data = client_socket.recv(1024)
-
-    print(f"Réponse du serveur : {data.decode()}")
+            # Attendre la réponse du serveur
+            data = client_socket.recv(1024)
+            print(f"Réponse du serveur : {data.decode()}")
 
 if __name__ == "__main__":
     main()
