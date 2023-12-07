@@ -29,24 +29,17 @@ on peut l'appeler comme ça : python web_sync.py https://www.ynov.com
 
 ````
 [root@localhost TP6]# python web_sync.py https://www.ynov.com
+La requête a pris 0.17 secondes.
 Contenu écrit avec succès dans le fichier : /tmp/web_page
 ````
 
 🌞 web_async.py
 
-pareil mais en asynchrone
-
-utilisez bien aiohttp pour faire la requête web
-et aiofiles pour l'écriture sur disque
-référez-vous au cours sur l'asynchrone pour la syntaxe
-
-
-les deux fonctions imposées précédemment doivent être converties en asynchrone
-pas de loop utilisez la syntaxe moderne avec gather()
-
-
-
-Ici on a deux appels qui peuvent générer de l'attente : la requête HTTP, et l'écriture sur le disque. L'un comme l'autre sont sujet à produire des temps d'attente, temps pendant lesquels Python pourra décider d'aller exécuter autre chose. L'asynchrone donc.
+````
+[root@localhost TP6]# python web_async.py https://www.ynov.com
+Contenu écrit avec succès dans le fichier : /tmp/web_page
+Le programme a pris 0.34 secondes pour s'exécuter.
+````
 
 🌞 web_sync_multiple.py
 

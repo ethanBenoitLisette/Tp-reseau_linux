@@ -32,7 +32,6 @@ async def main():
 
     url = sys.argv[1]
 
-    # Utilisation de asyncio.gather pour exécuter les fonctions de manière concurrente
     tasks = [get_content(url), write_content(await get_content(url), '/tmp/web_page')]
 
     await asyncio.gather(*tasks)
