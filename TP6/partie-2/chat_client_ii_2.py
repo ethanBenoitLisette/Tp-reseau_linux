@@ -10,9 +10,19 @@ async def receive_messages(client_socket):
     except (socket.error, KeyboardInterrupt):
         pass
 
+async def send_message(clients, message):
+    for client in clients:
+        try:
+            client.write(message.encode())
+            await client.drain()
+        except:
+            pass
+
 async def main():
     host = '10.0.3.17'
     port = 8888
+
+    loop = asyncio.get_event_loop()  # Initialiser la boucle d'événements ici
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         client_socket.connect((host, port))
