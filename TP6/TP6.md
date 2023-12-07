@@ -46,5 +46,16 @@ pas de loop utilisez la syntaxe moderne avec gather()
 
 🌞 Mesure !
 
-utilisez la technique de votre choix pour chronométrer le temps d'exécution du script
-comparez les deux pour par exemple 10 URLs passées en argument
+````
+[root@localhost TP6]# python web_sync_multiple.py urls.txt
+Contenu écrit avec succès dans le fichier : /tmp/web_www.pokepedia.fr_
+Contenu écrit avec succès dans le fichier : /tmp/web_www.ynov.com_
+Contenu écrit avec succès dans le fichier : /tmp/web_www.monsterhunter.com_
+Le programme a pris 2.08 secondes pour s'exécuter.
+
+[root@localhost TP6]# python web_async_multiple.py urls.txt
+Contenu écrit avec succès dans le fichier : /tmp/web_www.ynov.com_
+Contenu écrit avec succès dans le fichier : /tmp/web_www.pokepedia.fr_
+Contenu écrit avec succès dans le fichier : /tmp/web_www.monsterhunter.com_
+Le programme a pris 0.35 secondes pour s'exécuter.
+````
