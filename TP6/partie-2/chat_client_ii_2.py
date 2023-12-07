@@ -1,8 +1,8 @@
 import socket
 
 def main():
-    host = '10.0.3.16'  
-    port = 8888         
+    host = '127.0.0.1'
+    port = 8888
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         client_socket.connect((host, port))
