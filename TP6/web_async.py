@@ -2,6 +2,7 @@ import aiohttp
 import asyncio
 import os
 import sys
+import time
 
 async def get_content(url):
     try:
@@ -27,11 +28,17 @@ async def main():
         print("Usage: python web_sync.py <URL>")
         sys.exit(1)
 
+    start_time = time.time()
+
     url = sys.argv[1]
     content = await get_content(url)
     file_path = '/tmp/web_page'
 
     await write_content(content, file_path)
+
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Le programme a pris {elapsed_time:.2f} secondes pour s'exécuter.")
 
 if __name__ == "__main__":
     asyncio.run(main())
