@@ -27,19 +27,9 @@ Dès que l'exécution de la première fonction commencera à produire de l'atten
 
 on peut l'appeler comme ça : python web_sync.py https://www.ynov.com
 
-````
-[root@localhost TP6]# python web_sync.py https://www.ynov.com
-La requête a pris 0.17 secondes.
-Contenu écrit avec succès dans le fichier : /tmp/web_page
-````
 
 🌞 web_async.py
 
-````
-[root@localhost TP6]# python web_async.py https://www.ynov.com
-Contenu écrit avec succès dans le fichier : /tmp/web_page
-Le programme a pris 0.34 secondes pour s'exécuter.
-````
 
 🌞 web_sync_multiple.py
 
