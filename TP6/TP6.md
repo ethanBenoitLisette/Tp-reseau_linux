@@ -144,3 +144,12 @@ côté client, si le serveur se déco
 
 [chat_server_ii_6.py](partie-2/chat_server_ii_6.py)
 [chat_client_ii_6.py](partie-2/chat_client_ii_6.py)
+
+Bonus 
+
+6. Gestion d'historique
+   
+Quand tu rejoins la conversation en retard, t'as pas l'historique, relou.
+➜ Gérer un historique de conversation
+
+[chat_server_b-6.py](partie-3/chat_server_b-6.py)
