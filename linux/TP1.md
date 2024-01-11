@@ -19,10 +19,6 @@ endif
 
 vérifier que vous pouvez taper des commandes docker comme docker ps sans avoir besoin des droits root
 
-
-➜ Vous pouvez même faire un alias pour docker
-Genre si tu trouves que taper docker c'est long, et tu préférerais taper dk tu peux faire : alias dk='docker'. Si tu écris cette commande dans ton fichier ~/.bashrc alors ce sera effectif dans n'importe quel bash que tu ouvriras plutar.
-
 1. Un premier conteneur en vif
 
 Je rappelle qu'un "conteneur" c'est juste un mot fashion pour dire qu'on lance un processus un peu isolé sur la machine.
@@ -41,36 +37,55 @@ docker run -d -p 9999:80 nginx
 
 
 
-Si tu mets pas le -d tu vas perdre la main dans ton terminal, et tu auras les logs du conteneur directement dans le terminal. -d comme daemon : pour lancer en tâche de fond. Essaie pour voir !
+```
+[ethan@localhost etc]$ docker run -d -p 9999:80 nginx
+Unable to find image 'nginx:latest' locally
+latest: Pulling from library/nginx
+7b73345df136: Pull complete
+Digest: sha256:2bdc49f2f8ae8d8dc50ed00f2ee56d00385c6f8bc8a8b320d0a294d9e3b49026
+Status: Downloaded newer image for nginx:latest
+```
 
 🌞 Visitons
 
-vérifier que le conteneur est actif avec une commande qui liste les conteneurs en cours de fonctionnement
-afficher les logs du conteneur
-afficher toutes les informations relatives au conteneur avec une commande docker inspect
-
-afficher le port en écoute sur la VM avec un sudo ss -lnpt
-
-ouvrir le port 9999/tcp (vu dans le ss au dessus normalement) dans le firewall de la VM
-depuis le navigateur de votre PC, visiter le site web sur http://IP_VM:9999
-
-
-➜ On peut préciser genre mille options au lancement d'un conteneur, go docker run --help pour voir !
-➜ Hop, on en profite pour voir un truc super utile avec Docker : le partage de fichiers au moment où on docker run
-
-en effet, il est possible de partager un fichier ou un dossier avec un conteneur, au moment où on le lance
-avec NGINX par exemple, c'est idéal pour déposer un fichier de conf différent à chaque conteneur NGINX qu'on lance
-
-en plus NGINX inclut par défaut tous les fichiers dans /etc/nginx/conf.d/*.conf
-
-donc suffit juste de drop un fichier là-bas
-
-
-ça se fait avec -v pour volume (on appelle ça "monter un volume")
-
-
-C'est aussi idéal pour créer un conteneur qui setup un environnement de dév par exemple. On prépare une image qui contient Python + les libs Python qu'on a besoin, et au moment du docker run on partage notre code. Ainsi, on peut dév sur notre PC, et le code s'exécute dans le conteneur. On verra ça plus tard les dévs !
-
+````
+[ethan@localhost etc]$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS
+                   NAMES
+f7cee683af78   nginx     "/docker-entrypoint.…"   8 minutes ago   Up 8 minutes   0.0.0.0:9999->80/tcp,
+ :::9999->80/tcp   charming_mcnulty
+````
+````
+[ethan@localhost etc]$ docker logs charming_mcnulty
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
+/docker-entrypoint.sh: Configuration complete; ready for start up
+2023/12/22 08:40:18 [notice] 1#1: start worker process 28
+````
+````
+[ethan@localhost ~]$ docker inspect epic_volhard
+[
+    {
+        "Id": "b27b1428716d22fceb7e23c1bd084bb36dd3bdc68028abd08cb86fc2c369e3e4",
+        "Created": "2023-12-22T09:45:19.9003248Z",
+        "Path": "/docker-entrypoint.sh",
+        ...
+````
+````
+[ethan@localhost ~]$ sudo ss -lnpt
+State  Recv-Q Send-Q   Local Address:Port   Peer Address:Port Process
+LISTEN 0      128            0.0.0.0:22          0.0.0.0:*     users:(("sshd",pid=698,fd=3))
+LISTEN 0      4096           0.0.0.0:9999        0.0.0.0:*     users:(("docker-proxy",pid=1676,fd=4))
+LISTEN 0      128               [::]:22             [::]:*     users:(("sshd",pid=698,fd=4))
+LISTEN 0      4096              [::]:9999           [::]:*     users:(("docker-proxy",pid=1681,fd=4))
+````
+````
+[ethan@localhost ~]$ sudo firewall-cmd --zone=public --add-port=9999/tcp --permanent
+success
+[ethan@localhost ~]$ sudo firewall-cmd --reload
+success
+````
 🌞 On va ajouter un site Web au conteneur NGINX
 
 créez un dossier nginx
@@ -86,10 +101,11 @@ exemple de index.html :
 <h1>MEOOOW</h1>
 
 
-
-config NGINX minimale pour servir un nouveau site web dans site_nul.conf :
-
-
+````
+[ethan@localhost ~]$ mkdir /home/ethan/nginx
+[ethan@localhost ~]$ cd /home/ethan/nginx
+[ethan@localhost nginx]$ echo '<h1>MEOOOW</h1>' > index.html
+[ethan@localhost nginx]$ echo '
 server {
     listen        8080;
 
@@ -97,33 +113,34 @@ server {
         root /var/www/html;
     }
 }
-
-
-
-lancez le conteneur avec la commande en dessous, notez que :
-
-on partage désormais le port 8080 du conteneur (puisqu'on l'indique dans la conf qu'il doit écouter sur le port 8080)
-on précise les chemins des fichiers en entier
-note la syntaxe du -v : à gauche le fichier à partager depuis ta machine, à droite l'endroit où le déposer dans le conteneur, séparés par le caractère :
-
-c'est long putain comme commande
-
-
-
-
-docker run -d -p 9999:8080 -v /home/<USER>/nginx/index.html:/var/www/html/index.html -v /home/<USER>/nginx/site_nul.conf:/etc/nginx/conf.d/site_nul.conf nginx
-
+' > site_nul.conf
+````
+```
+[ethan@localhost nginx]$ cd
+[ethan@localhost ~]$ docker cp /home/ethan/nginx/. b27b1428716d:/etc/nginx/sites-available/
+Successfully copied 3.58kB to b27b1428716d:/etc/nginx/sites-available/
+[ethan@localhost ~]$ docker restart b27b1428716d
+b27b1428716d
+```
+````
+[ethan@localhost ~]$ sudo systemctl restart docker
+[sudo] password for ethan:
+[ethan@localhost ~]$ docker run -d -p 9999:8080 -v /home/ethan/nginx/index.html:/var/www/html/index.html -v /home/ethan/nginx/site_nul.conf:/etc/nginx/conf.d/site_nul.conf nginx
+6f511ad538c79c3af67d00a11a897db94326754169fb78da1689b35ff388ea90
+````
 
 🌞 Visitons
 
-vérifier que le conteneur est actif
-aucun port firewall à ouvrir : on écoute toujours port 9999 sur la machine hôte (la VM)
-visiter le site web depuis votre PC
+````
+[ethan@localhost ~]$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                               NAMES
+6f511ad538c7   nginx     "/docker-entrypoint.…"   3 minutes ago   Up 3 minutes   80/tcp, 0.0.0.0:9999->8080/tcp, :::9999->8080/tcp   busy_edison
+````
 
-
-5. Un deuxième conteneur en vif
+1. Un deuxième conteneur en vif
 Cette fois on va lancer un conteneur Python, comme si on voulait tester une nouvelle lib Python par exemple. Mais sans installer ni Python ni la lib sur notre machine.
 On va donc le lancer de façon interactive : on lance le conteneur, et on pop tout de suite un shell dedans pour faire joujou.
+
 🌞 Lance un conteneur Python, avec un shell
 
 il faut indiquer au conteneur qu'on veut lancer un shell

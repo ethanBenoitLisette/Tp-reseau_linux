@@ -34,20 +34,8 @@ AUSSI POUR S'ASSURER QUE VOUS SAVEZ INSTALLER UNE LIB SUR VOTRE POSTE MAINTENANT
 
 🌞 ws_i_1_server.py et ws_i_1_client.py
 
-simple client/serveur qui utilisent la librairie Websocket pour communiquer
-tout doit être asynchrone
-la boucle d'utilisation de l'application :
-
-l'utilisateur (client) peut saisir une string et l'envoyer au serveur
-le serveur reçoit le message
-
-affiche le message
-le serveur renvoie au client Hello client ! Received "<STRING>" où <STRING> est la string saisie/envoyée par le client
-
-
-le client reçoit le message
-
-affiche la string retournée par le serveur
+[ws_i_1_server-2.py](ws_i_1_server-2.py)
+[ws_i_1_client-2.py](ws_i_1_client-2.py)
 
 
 
@@ -100,35 +88,15 @@ Une fois de plus, je vais pas réinventer la roue quand elle est déjà bien ron
 Un lien donc vers la doc officielle de Mozilla au sujet de l'API WebSocket dans les navigateur (dit autrement : comment ouvrir un websocket en JS, puis send/receive des données).
 🌞 ws_i_2_client.js
 
-un .js donc oui ! Vous l'exécutez en local dans votre navigateur pour vos tests
-doit se comporter comme ws_i_1_client.py
-
-un input utilisateur, et il affiche la string reçue du serveur !
-
-
-Pour l'affichage, bah t'as javascript sous la main ! Libre à toi de faire un p'tit formulaire pour l'input, et de créer une div ou un élément de liste quand tu reçois un message ! Ou juste un alert(). Ou autre chose ! Démerde-toi, mais reste simple !
-
-Bah l'exemple est nul, mais ça c'est déjà impossible à faire avec juste du HTTP : le serveur qui envoie une donnée au client, et le client qui agit en fonction (HTTP c'est toujours le client qui fait une requête, jamais le serveur qui envoie arbitrairement une donnée sans requête du client).
+[ws_i_2_client-2.py](ws_i_2_client-2.py)
 
 3. Chatroom magueule
+   
 🌞 ws_i_3_server.py et ws_i_3_client.{py,js}
 
-un seul fichier pour le client : JS ou Python, libre à toi !
-une chatroom fonctionnelle comme au TP6
-
-au moins fonctionnalités minimales : plusieurs clients qui rejoignent et peuvent discuter
-pas de sockets TCP bruts : que du Websocket !
-
-
-le mieux serait de récup le code du TP6 et juste l'adapter pour passer de sockets TCP bruts à des Websockets
-
-➜ Petit mot technique vitefé en passant
-
-la chatroom du TP6 elle est fonctionnelle, opti si vous avez fait des trucs de ouf dans le dév
-bref ça marche bien, c'est pas déconnant, mais c'est pas vraiment pas intégrable dans un contexte Web (et aujourd'hui, tout est web)
-c'est une chatroom autonome, dans son coin
-faire ça en Websockets ça fait que c'est DIRECTEMENT intégrable à une app web (app mobile, site web, autres)
-genre là il manque quasi-rien pour avoir une app mobile fonctionnelle ou un discord-like dans un navigateur
+[ws_i_3_server-2.py](ws_i_3_server-2.py)
+[ws_i_3_client-2.py](ws_i_3_client-2.py)
+[ws_i_3_client-2.py](ws_i_3_client-2.py)
 
 
 II. Base de données
