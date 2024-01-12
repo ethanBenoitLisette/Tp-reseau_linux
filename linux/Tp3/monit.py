@@ -13,10 +13,15 @@ def init_log_file():
 def log_action(action):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_entry = {"timestamp": timestamp, "action": action}
-    
-    with open(LOG_FILE, "r") as log_file:
-        logs = json.load(log_file)
-    
+    print(log_entry)
+
+
+    if os.path.exists(LOG_FILE):
+        with open(LOG_FILE, "r") as log_file:
+            logs = json.load(log_file)
+    else:
+        logs = []
+    print(logs)
     logs.append(log_entry)
 
     with open(LOG_FILE, "w") as log_file:
