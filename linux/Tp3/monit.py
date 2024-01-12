@@ -1,34 +1,70 @@
 import psutil
 import socket
 import os
+import json
+from datetime import datetime
+
+LOG_FILE = "monit_logs.json"
+
+def log_action(action):
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_entry = {"timestamp": timestamp, "action": action}
+    
+    with open(LOG_FILE, "a") as log_file:
+        json.dump(log_entry, log_file)
+        log_file.write("\n")
 
 def monitor_system():
-    # Informations sur la mémoire RAM
-    memory_info = psutil.virtual_memory()
-    print(f"RAM Usage: {memory_info.percent}%")
+    log_action("Check")
 
-    # Informations sur l'utilisation du disque
-    disk_info = psutil.disk_usage("/")
-    print(f"Disk Usage: {disk_info.percent}%")
+def list_reports():
+    try:
+        with open(LOG_FILE, "r") as log_file:
+            for line in log_file:
+                log_entry = json.loads(line)
+                if log_entry["action"] == "Check":
+                    print(f"Timestamp: {log_entry['timestamp']}")
+    except FileNotFoundError:
+        print("Aucun fichier de log trouvé.")
 
-    # Informations sur l'activité du CPU
-    cpu_info = psutil.cpu_percent(interval=1)
-    print(f"CPU Usage: {cpu_info}%")
+def get_last_report():
+    try:
+        with open(LOG_FILE, "r") as log_file:
+            for line in reversed(list(log_file)):
+                log_entry = json.loads(line)
+                if log_entry["action"] == "Check":
+                    print(f"Dernier rapport: {log_entry['timestamp']}")
+                    break
+    except FileNotFoundError:
+        print("Aucun fichier de log trouvé.")
 
-    # Vérification des ports TCP ouverts
-    open_ports = get_open_ports()
-    print(f"Open TCP Ports: {open_ports}")
+def get_avg_report(last_x_hours):
+    try:
+        avg_timestamps = []
 
-def get_open_ports():
-    open_ports = []
-    for port in range(1, 1025):  # Vérifiez les ports de 1 à 1024
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1)
-        result = sock.connect_ex(("localhost", port))
-        if result == 0:
-            open_ports.append(port)
-        sock.close()
-    return open_ports
+        with open(LOG_FILE, "r") as log_file:
+            for line in reversed(list(log_file)):
+                log_entry = json.loads(line)
+
+                if log_entry["action"] == "Check":
+                    timestamp = datetime.strptime(log_entry['timestamp'], "%Y-%m-%d %H:%M:%S")
+                    now = datetime.now()
+
+                    # Calcul de la différence en heures
+                    hours_difference = (now - timestamp).total_seconds() / 3600
+
+                    # Ajout du timestamp si dans la plage spécifiée
+                    if 0 <= hours_difference < last_x_hours:
+                        avg_timestamps.append(log_entry['timestamp'])
+                    elif hours_difference >= last_x_hours:
+                        break  # Sortir du parcours si les données sont trop anciennes
+
+        if len(avg_timestamps) == 0:
+            print(f"Aucun rapport trouvé pour les {last_x_hours} dernières heures.")
+        else:
+            print(f"Valeurs moyennes des {last_x_hours} dernières heures: {avg_timestamps}")
+    except FileNotFoundError:
+        print("Aucun fichier de log trouvé.")
 
 if __name__ == "__main__":
-    monitor_system()
+    get_avg_report(24)
