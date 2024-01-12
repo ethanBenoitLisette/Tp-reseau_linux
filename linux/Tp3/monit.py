@@ -7,25 +7,20 @@ from datetime import datetime
 LOG_FILE = "monit_logs.json"
 
 def init_log_file():
-    # Correction : Utilisation de `w` au lieu de `a` pour écrire un tableau JSON vide
-    with open(LOG_FILE, "w") as log_file:
-        json.dump([], log_file)
+    with open(LOG_FILE, "a") as log_file:
+        log_file.write("[]\n")  # Crée un tableau JSON vide
 
 def log_action(action):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_entry = {"timestamp": timestamp, "action": action}
     
-    try:
-        # Correction : Utilisation de `r+` pour ouvrir le fichier en mode lecture/écriture
-        with open(LOG_FILE, "r+") as log_file:
-            logs = json.load(log_file)
-            logs.append({"timestamp": timestamp, "action": action})
-            # Correction : Retour au début du fichier pour éviter d'ajouter des espaces inutiles
-            log_file.seek(0)
-            json.dump(logs, log_file, indent=2)
-            # Correction : Tronquer le fichier après l'écriture pour éviter des données en double
-            log_file.truncate()
-    except FileNotFoundError:
-        print("Aucun fichier de log trouvé.")
+    with open(LOG_FILE, "r") as log_file:
+        logs = json.load(log_file)
+    
+    logs.append(log_entry)
+
+    with open(LOG_FILE, "w") as log_file:
+        json.dump(logs, log_file, indent=2)
 
 def monitor_system():
     # ... (comme dans le premier exemple)
@@ -56,26 +51,46 @@ def get_last_report():
 
 def get_avg_report(last_x_hours):
     try:
-        now = datetime.now()
-        avg_timestamps = []
-
         with open(LOG_FILE, "r") as log_file:
-            for line in reversed(list(log_file)):
-                log_entry = json.loads(line)
-                temp_entry = log_entry.get("action")
-
-                if temp_entry is not None and temp_entry == "Check" \
-                        and 0 <= (now - datetime.strptime(log_entry['timestamp'], "%Y-%m-%d %H:%M:%S")).total_seconds() / 3600 < last_x_hours:
-                    avg_timestamps.append(log_entry['timestamp'])
-
-        if avg_timestamps:
-            print(f"Valeurs moyennes des {last_x_hours} dernières heures: {avg_timestamps}")
-        else:
-            print(f"Aucun rapport trouvé pour les {last_x_hours} dernières heures.")
+            logs = json.load(log_file)
+        
+        timestamps = [log_entry['timestamp'] for log_entry in logs if log_entry["action"] == "Check"]
+        
+        if len(timestamps) < last_x_hours:
+            print(f"Nombre insuffisant de rapports pour calculer la moyenne sur {last_x_hours} heures.")
+            return
+        
+        avg_timestamps = timestamps[:last_x_hours]
+        print(f"Valeurs moyennes des {last_x_hours} dernières heures: {avg_timestamps}")
     except FileNotFoundError:
         print("Aucun fichier de log trouvé.")
 
 if __name__ == "__main__":
-    init_log_file()
-    get_avg_report(24)
+    import sys
 
+    if len(sys.argv) < 2:
+        print("Usage: monit.py <command>")
+        sys.exit(1)
+
+    init_log_file()  # Appel de la fonction d'initialisation du fichier de log
+
+    command = sys.argv[1]
+
+    if command == "check":
+        monitor_system()
+    elif command == "list":
+        list_reports()
+    elif command == "get" and len(sys.argv) == 3:
+        sub_command = sys.argv[2]
+
+        if sub_command == "last":
+            get_last_report()
+        elif sub_command == "avg" and len(sys.argv) == 4:
+            last_x_hours = int(sys.argv[3])
+            get_avg_report(last_x_hours)
+        else:
+            print("Commande invalide.")
+            sys.exit(1)
+    else:
+        print("Commande invalide.")
+        sys.exit(1)
