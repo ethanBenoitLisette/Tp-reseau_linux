@@ -28,9 +28,7 @@ def log_action(action):
         json.dump(logs, log_file, indent=2)
 
 def monitor_system():
-    # ... (comme dans le premier exemple)
 
-    # Log de l'action de vérification
     log_action("Check")
 
 def list_reports():
@@ -76,8 +74,6 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: monit.py <command>")
         sys.exit(1)
-
-    init_log_file()  # Appel de la fonction d'initialisation du fichier de log
 
     command = sys.argv[1]
 
